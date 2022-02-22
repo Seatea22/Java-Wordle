@@ -39,7 +39,7 @@ public class GameModel {
         } catch (FileNotFoundException | NullPointerException e) {
             System.out.println(e);
         }
-        System.out.println(movesLeft + ", " + answer + ", " + wordSize);
+        //System.out.println(movesLeft + ", " + answer + ", " + wordSize);
         announce(null);
     }
 
