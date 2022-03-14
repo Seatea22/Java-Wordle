@@ -59,7 +59,6 @@ public class Game {
                         }
                     }
                     System.out.println(res);
-                    tries -= 1;
                     System.out.println("Tries left: " + tries);
                 }
             }

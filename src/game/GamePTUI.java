@@ -13,36 +13,40 @@ import java.util.Scanner;
 
 public class GamePTUI {
     private static GameModel model; //Game model
+    private static String[][] board;
 
     public static void main(String[] args) {
         while(true) {
             model = new GameModel();
+            board = new String[model.getTries()][model.getAnswer().length()];
             Scanner scanner = new Scanner(System.in);
-            String emptyString = "";
-            for (int i = 0; i < model.getAnswer().length(); i++) {
-                emptyString += "_ ";
-            }
-            System.out.println(emptyString);
+            displayBoard();
             System.out.println("Tries left: " + model.getTries());
 
             while (model.getTries() > 0) {
                 String input = scanner.nextLine();
-                String response = "";
-                String expected = "";
-                for (int i = 0; i < model.getAnswer().length(); i++) {
-                    expected += "G ";
-                }
 
                 if (input.length() != model.getAnswer().length()) System.out.println("Not the same length.");
-                else response = model.guess(input);
+                else {
+                    model.guess(input);
 
-                if (expected.equals(response)) {
+                    String response = model.getGuess();
+                    String[] responseSplit = response.split("\\s+");
+
+                    for (int i = 0; i < responseSplit.length; i++) {
+                        board[model.TOTAL_MOVES - model.getTries()][i] = responseSplit[i];
+                    }
+                    displayBoard();
+                    model.setTries(model.getTries() - 1);
+                }
+
+                if (model.isSolution()) {
                     System.out.println("You won!");
                     break;
-                } else if (!expected.equals(response) && model.getTries() > 0) {
-                    System.out.println("Try Again!\n" + response);
+                } else if (!model.isSolution() && model.getTries() > 0) {
+                    System.out.println("Try Again!");
                     System.out.println("Tries left: " + model.getTries());
-                } else if (!expected.equals(response) && model.getTries() <= 0) {
+                } else if (!model.isSolution() && model.getTries() <= 0) {
                     System.out.println("You lost!");
                 }
             }
@@ -53,5 +57,21 @@ public class GamePTUI {
                 System.out.println("Resetting...");
             } else break;
         }
+    }
+
+    private static void displayBoard() {
+        StringBuilder res = new StringBuilder();
+        for(int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if (board[i][j] == null) {
+                    res.append("_");
+                } else {
+                    res.append(board[i][j]);
+                }
+                res.append(" ");
+            }
+            res.append("\n");
+        }
+        System.out.println(res);
     }
 }
